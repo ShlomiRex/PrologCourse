@@ -20,7 +20,7 @@ edge(X, NodeI, NodeJ) :-
 % edge(edge1, X, Y) % (X,Y) = [(node1, node2), (node2, node1)]
 
 vertical(EdgeI, EdgeJ) :-
-	edge(EdgeI, X, Y), edge(EdgeJ, X, Z), X\=Y, X\=Z.
+	edge(EdgeI, X, Y), edge(EdgeJ, X, Z), X\=Y, X\=Z, EdgeI\=EdgeJ.
 
 % vertical(edge1, edge2). % true
 % vertical(edge2, edge1). % true
@@ -29,7 +29,7 @@ vertical(EdgeI, EdgeJ) :-
 % vertical(edge3, edge4). % true
 
 parallel(EdgeI, EdgeJ) :-
-	vertical(EdgeI, EdgeK), vertical(EdgeJ, EdgeK), EdgeK\=EdgeI, EdgeK\=EdgeJ.
+	vertical(EdgeI, EdgeK), vertical(EdgeJ, EdgeK), EdgeK\=EdgeI, EdgeK\=EdgeJ, EdgeI\=EdgeJ.
 
 % parallel(edge1, edge2). % false
 % parallel(edge2, edge1). % false
@@ -37,4 +37,21 @@ parallel(EdgeI, EdgeJ) :-
 % parallel(edge1, edge3). % true
 % parallel(edge2, edge4). % true
 % parallel(edge4, edge2). % true
+% parallel(edge1, edge1). % false
+
+rectangular(EdgeI, EdgeJ, EdgeK, EdgeL) :-
+	vertical(EdgeI, EdgeJ), parallel(EdgeI, EdgeK),
+	vertical(EdgeJ, EdgeK), parallel(EdgeJ, EdgeL),
+	vertical(EdgeK, EdgeL).
+
+% rectangular(edge1, edge2, edge3, edge4). % true
+% rectangular(edge4, edge1, edge2, edge3). % true
+% rectangular(edge3, edge4, edge1, edge2). % true
+% rectangular(edge2, edge3, edge4, edge1). % true
+% rectangular(edge4, edge2, edge3, edge1). % false
+% rectangular(edge1, edge2, edge1, edge2). % false
+% rectangular(edge1, edge2, edge3, edge1). % false
+% rectangular(edge1, edge2, edge4, edge3). % false
+
+
 
