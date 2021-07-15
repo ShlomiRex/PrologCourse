@@ -1,5 +1,4 @@
 plus(0, Z, Z). % 0+z=z
-plus(Z, 0, Z). % z+0=z
 plus(s(X), Y, s(Z)):-
 	plus(X, Y, Z). % decrement X
 
