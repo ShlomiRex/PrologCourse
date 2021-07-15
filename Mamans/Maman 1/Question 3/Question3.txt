@@ -1,0 +1,16 @@
+הסבר היטב, גם באופן הצהרתי (לוגי) וגם באופן פרוצדורלי, את תשובת פרולוג לשאילתא:
+?- not_greater(s(s(0)), Y).
+
+תשובה:
+1) Prolog calls not_greater(s(s(0)), Y).
+2) Prolog calls plus(s(s(0)), _, Y).
+3) Prolog checks all 4 defenitions of plus untill it is matched. 
+	3.1) plus(0, 0, 0). is not good (no zero)
+	3.2) plus(0, A, A). is not good (no zero in X)
+	3.3) plus(A, 0, A). is not good (no zero in Y)
+	3.4) Prolog calls plus(s(X), s(Y), s(Z))
+		3.4.1) Prolog calls the function plus(s(X), Y, Z) recursivly untill rule 3.1 is matched or rule 3.2 is matched. Z is 'unwrapped' once every call, which means Prolog will give it Z with enough 'wraps' to match the recursion
+		3.4.2) Prolog reaches rule 3.1 or rule 3.2. The wrappings of Z is now the size of original X. New X is now 0.
+		3.4.3) Prolog calls plus(X, s(Y), Z). untill it matches with rule 3.1 or 3.3.
+		3.4.4) Prolog reaches rule 3.1 or rule 3.4. The wrappings of Z is now the size of previous Z (size of X) plus the size of original Y.
+4) Prolog returns the biggest Z with s() wrappings.
