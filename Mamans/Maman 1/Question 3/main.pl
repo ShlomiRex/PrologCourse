@@ -1,12 +1,9 @@
 plus(0, 0, 0).
+plus(0, A, A).
+plus(A, 0, A).
 plus(s(X), s(Y), s(s(Z))):-
-	plus(X, Y, Z). % decrement both
-plus(s(X), 0, s(Z)):-
-	plus(X, 0, Z). % decrement X only
-plus(0, s(Y), s(Z)):-
-	plus(0, Y, Z). % decrement Y only
-
-
+	plus(X, s(Y), s(Z)), % Dec X only
+	plus(s(X), Y, s(Z)). % Dec Y only
 % plus(s(s(0)), s(s(s(0))), Z). % Z = s(s(s(s(s(0))))) 
 % plus(s(s(0)), Y, s(s(s(s(s(0)))))). % Y = s(s(s(0))) 
 % plus(X, s(s(s(0))), s(s(s(s(s(0)))))). % X = s(s(0)) 
