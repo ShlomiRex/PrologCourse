@@ -1,16 +1,3 @@
-count(0, 0).
-count(s(X), Z):-
-	count(X, Z1), % Transform s(X) to X
-	Z is Z1+1.
-
-% num_to_recursive_s(0).
-% num_to_recursive_s(Z):-
-% 	num_to_recursive_s(Z):
-
-dec(0, 0).
-dec(s(X), s(Z)):-
-	dec(X, Z).
-
 plus(0, Z, Z).
 plus(X, 0, X).
 plus(s(X), s(Y), s(Z)):-
@@ -38,4 +25,16 @@ times(X, s(Y), Z):-
 % times(X, s(s(s(0))), s(s(s(s(s(s(0))))))). % X = s(s(0))
 
 
+
+
+not_greater(0, s(_)).
+not_greater(0, 0).
+not_greater(s(X), s(Y)):-
+	not_greater(X, Y).
+
+% not_greater(s(s(0)), s(s(s(0)))). % true
+% not_greater(X, s(s(s(0)))). 	% X = 0 ;
+								% X = s(0) ;
+								% X = s(s(0)) ;
+								% X = s(s(s(0))) 
 
