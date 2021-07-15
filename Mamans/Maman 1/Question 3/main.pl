@@ -1,6 +1,10 @@
-plus(0, Z, Z). % 0+z=z
-plus(s(X), Y, s(Z)):-
-	plus(X, Y, Z). % decrement X
+plus(0, 0, 0).
+plus(s(X), s(Y), s(s(Z))):-
+	plus(X, Y, Z). % decrement both
+plus(s(X), 0, s(Z)):-
+	plus(X, 0, Z). % decrement X only
+plus(0, s(Y), s(Z)):-
+	plus(0, Y, Z). % decrement Y only
 
 
 % plus(s(s(0)), s(s(s(0))), Z). % Z = s(s(s(s(s(0))))) 
