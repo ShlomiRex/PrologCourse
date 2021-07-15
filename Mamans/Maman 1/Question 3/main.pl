@@ -34,3 +34,4 @@ times(X, s(Y), Z):-
 	times(X, Y, XY), % Dec Y, result is X*((Y+1)-1) = X*Y
 	plus(XY, X, Z). 
 
+
