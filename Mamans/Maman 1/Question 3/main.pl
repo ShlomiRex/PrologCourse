@@ -1,4 +1,5 @@
-plus(0, Z, Z).
+plus(0, Z, Z). % 0+z=z
+plus(Z, 0, Z). % z+0=z
 plus(s(X), Y, s(Z)):-
 	plus(X, Y, Z). % decrement X
 
@@ -34,3 +35,4 @@ not_greater(X, Y):-
 								% X = s(s(0)) ;
 								% X = s(s(s(0))) 
 
+% not_greater(s(s(0)), Y).
