@@ -25,11 +25,13 @@ pet(dog).
 pet(cat).
 pet(fox).
 pet(horse).
+pet(zebra).
 
 drinkable(coffee).
 drinkable(tea).
 drinkable(milk).
 drinkable(orange_juice).
+drinkable(water).
 
 smokeable(marboro).
 smokeable(time).
@@ -47,51 +49,52 @@ house(blue_house).
 street(H1, H2, H3, H4, H5):-
 	house(H1), house(H2), house(H3), house(H4), house(H5),
 	house_next_to(H1, H2),
-	house_next_to(H2, H1),
-
 	house_next_to(H2, H3),
-	house_next_to(H3, H2),
-
 	house_next_to(H3, H4),
-	house_next_to(H4, H3),
-
-	house_next_to(H4, H5),
-	house_next_to(H5, H4).
+	house_next_to(H4, H5).
 
 
 
 lives_in(english, red_house).
-
-has_pet(spanish, dog).
-has_pet(_, _):-
-	has_pet(A, dog),
-	has_pet(B, cat),
-	has_pet(C, fox),
-	has_pet(D, horse),
-	A \= B, A \= C, A \= D, B \= C, B \= D, C \= D.
-
-drinks(X, coffee):-
-	lives_in(X, green_house).
-drinks(ukrain, tea).
-
-house_next_to(white_house, green_house).
-house_next_to(green_house, white_house).
-
-smokes(has_pet(_, cat), marboro).
-smokes(lives_in(_, yellow_house), time).
-
-drinks(X, milk):-
-	street(_, _, H3, _, _),
-	lives_in(X, H3).
-
 lives_in(norwegian, Y):-
 	street(Y, _, _, _, _).
 
-house_next_to(has_pet(_, fox), smokes(_, montena)).
-house_next_to(smokes(_, montena), has_pet(_, fox)).
+has_pet(spanish, dog).
 
-house_next_to(smokes(_, time), has_pet(_, horse)).
-house_next_to(has_pet(_, horse), smokes(_, time)).
 
-drinks(smokes(_, lucky_strike), orange_juice).
+drinks(X, coffee):-
+    lives_in(X, green_house).
+drinks(ukrain, tea).
+drinks(X, milk):-
+	street(_, _, H3, _, _),
+	lives_in(X, H3).
+drinks(X, orange_juice):-
+    smokes(X, lucky_strike).
+
+
+
+smokes(X, marboro):-
+    has_pet(X, cat).
+smokes(X, time):-
+    lives_in(X, yellow_house).
+smokes(japanese, parlament).
+
+
+house_next_to(white_house, green_house).
+house_next_to(House, House2):-
+    has_pet(X, fox),
+    lives_in(X, House),
+    smokes(Y, montena),
+    lives_in(Y, House2),
+    X \= Y.
+house_next_to(House, House2):-
+    smokes(X, time),
+    lives_in(X, House),
+    has_pet(Y, horse),
+    lives_in(Y, House2),
+    X \= Y.
+house_mext_to(House, blue_house):-
+    lives_in(norwegian, House).
+
+
 
