@@ -20,17 +20,18 @@ divide(L, A, B):-
 merge([], [], []).
 merge([X|FirstHalfRest], [Y|SecondHalfRest], [X, Y|Result]):-
 	merge(FirstHalfRest, SecondHalfRest, Result).
+merge([X|FirstHalfRest], [], [X|Result]):-
+	merge(FirstHalfRest, [], Result).
 
 shuffle(X, 0, X).
 shuffle(List, Times, NewList):-
 	NewTimes is Times - 1,
 	divide(List, FirstHalf, SecondHalf),
 	merge(FirstHalf, SecondHalf, Result),
-	writeln(Result),
 	shuffle(Result, NewTimes, NewList).
 
 
-% shuffle([1,2,3,4,5,6,7,8,9,10], 4, Result). % List = [1, 5, 9, 4, 8, 3, 7, 2, 6, 10].
-% range(1, 10, List), shuffle(List, 4, Result).
+% shuffle([1,2,3,4,5,6,7,8,9,10], 4, Result). % Result = [1, 5, 9, 4, 8, 3, 7, 2, 6, 10].
+% range(1, 10, List), shuffle(List, 4, Result). % Result = [1, 5, 9, 4, 8, 3, 7, 2, 6, 10].
 
-
+% range(1, 27, List), shuffle(List, 4, Result). % Result = [1,23,18,13,8,3,25,20,15,10,5,27,22,17,12,7,2,24,19,14,9,4,26,21,16,11,6]
