@@ -17,27 +17,20 @@ divide(L, A, B):-
 % divide([1, 2, 3], List1, List2). % List1 = [1, 2], List2 = [3] .
 % range(1, 9, List), divide(List, A, B). % A = [1, 2, 3, 4, 5], B = [6, 7, 8, 9].
 
-shuffle([X, Y], _, [Y, X]).
-shuffle([], _, []).
-shuffle(_, 0, _).
-shuffle([X], _, [X]).
+merge([], [], []).
+merge([X|FirstHalfRest], [Y|SecondHalfRest], [X, Y|Result]):-
+	merge(FirstHalfRest, SecondHalfRest, Result).
 
-%mix([X|FirstHalfRest], [Y|SecondHalfRest], [X, Y|Result]):-
-
-
+shuffle(X, 0, X).
 shuffle(List, Times, NewList):-
-	writeln(Times),
-	writeln(List),
 	NewTimes is Times - 1,
 	divide(List, FirstHalf, SecondHalf),
-	shuffle(FirstHalf, NewTimes, NewFirstHalf),
-	writeln("shuffling"),
-	shuffle(SecondHalf, NewTimes, NewSecondHalf),
-	writeln("new first half"),
-	writeln(NewFirstHalf),
-	writeln("new second half"),
-	writeln(NewSecondHalf),
-	append(NewFirstHalf, NewSecondHalf, NewList).
+	merge(FirstHalf, SecondHalf, Result),
+	writeln(Result),
+	shuffle(Result, NewTimes, NewList).
 
-% shuffle( [1,2,3,4,5,6,7,8,9,10], 4, List). 
+
+% shuffle([1,2,3,4,5,6,7,8,9,10], 4, Result). % List = [1, 5, 9, 4, 8, 3, 7, 2, 6, 10].
 % range(1, 10, List), shuffle(List, 4, Result).
+
+
