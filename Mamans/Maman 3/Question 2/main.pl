@@ -1,5 +1,5 @@
 % To run:
-% consult("main.pl"), retractall(board(_,_,_)), begin().
+% consult("main.pl"), retractall(board(_)), begin().
 
 
 /*
@@ -19,7 +19,7 @@ begin():-
 	writeln('Welcome to TicTacToe! Made by Shlomi Domnenko!'),
 	writeln('Starting player is X, second player is O'),
 	nl,
-	assert(board([1,0,0], [0,0,0], [0,0,0])),
+	assert(board([0,0,0, 0,0,0, 0,0,0])), % Start the game with empty board
 	playerTurn(1).
 
 
@@ -30,52 +30,97 @@ playerTurn(Player):-
 	printBoard(),
 	writeln('Please select your cell'),
 	inputSelectCell(Row, Col),
-	checkValidMove(Player, Row, Col),
-	write('[DEBUG] Player made a move'), nl,
-	writeCell(Player, Row, Col).
+	playerMove(Player, Row, Col),
+	checkWinner(Player).
 	
-	
+
+
+
+checkWinner(Player):-
+	!,
+	write('[DEBUG] Checking if winner...'), nl,
+
+	retract(board(Cells)), % Look at memory
+	assert(board(Cells)), % Don't update it, only read
+
+	% Get rows, cols and diags (all are list of length 3)
+	getRows(Cells, Row1, Row2, Row3),
+	getCols(Cells, Col1, Col2, Col3),
+
+	write('Getting diagas'), nl,
+	getDiags(Cells, Diag1, Diag2),
+	write('Diagas: '), write(Diag1), write(Diag2), nl,
+	(
+		member([Player, Player, Player], [Row1, Row2, Row3]) ;
+		member([Player, Player, Player], [Col1, Col2, Col3]) ;
+		member([Player, Player, Player], [Diag1, Diag2])
+	).
+
+
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Board read and writes - Start @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 % Checks if cell is occupied.
-checkValidMove(Player, RowNumber, ColNumber):-
-	write('[DEBUG] Getting the cell the player chose...'), nl,
-	ColIndex is ColNumber - 1,
-	getCell(RowNumber, ColIndex, Cell),
-	write('[DEBUG] Cell: '), write(Cell), nl,
-	(Cell == 0 ; (write('Cell is occupied! Try again.'), nl, fail)).
-% Return list of cells given row number.
-getRow(RowNumber, RowResult):-
-	retract(board(Row1, Row2, Row3)),
-	( (RowNumber == 1, RowResult = Row1) ; (RowNumber == 2, RowResult = Row2) ; (RowNumber == 3, RowResult = Row3) ),
-	assert(board(Row1, Row2, Row3)).
-% Return single cell (integer 0, 1, or 2)
-getCell(RowNumber, ColNumber, CellResult):-
-	getRow(RowNumber, Row),
-	write('[DEBUG] The row selected: '), write(Row), nl,
-	getElementAtIndex(Row, ColNumber, CellResult).
+playerMove(Player, RowNumber, ColNumber):-
+	write('[DEBUG] Checking if valid move...'), nl,
+	Index is ((RowNumber-1) * 3) + (ColNumber - 1), % RowNumber, ColNumber start from 1, so we do a little math to calculate index in 1D array.
+	write('[DEBUG] Cell index: '), write(Index), nl,
 
-% General predicate to get n'th element of a list.
-getElementAtIndex([X|Xs], Index, Res):-
-	Index2 is Index - 1,
-	getElementAtIndex(Xs, Index2, Res), !.
-getElementAtIndex([X|_], 0, X).
+	retract(board(Cells)), % Look at memory
 
-writeElementAtIndex([X|Xs], Index, [X|RestNewList]):-
-	Index > -1, !,
-	Index2 is Index - 1,
-	writeElementAtIndex(Xs, Index2, NewList).
+	nth0(Index, Cells, Cell),
+	write('[DEBUG] Cell chosen: '), write(Cell), nl,
+	(
+		(
+			Cell == 0,
+			write('[DEBUG] Player made a valid move'), nl,
+			replace(Cells, Index, Player, NewCells), % Player made a valid move. Execute the move.
+			assert(board(NewCells)) % Update the memory.
+		) ; 
+		(write('Cell is occupied! Try again.'), nl, assert(board(Cells)), fail) % Return the memory to what it was before.
+	).
 
-writeElementAtIndex([], 0, _):- !.
-writeElementAtIndex([X|Xs], 0, [X|RestNewList]):-
-	writeElementAtIndex(Xs, 0, RestNewList), !.
+% Replace element in list by given index. Returns the new list.
+% Signature: List, Index, NewElement, NewList.
+replace([_|T], 0, X, [X|T]).
+replace([H|T], I, X, [H|R]):- I > -1, NI is I-1, replace(T, NI, X, R), !.
+replace(L, _, _, L).
 
-writeCell(Player, RowNumber, ColNumber):-
-	write('[DEBUG] Writing to cell'), nl,
-	getRow(RowNumber, Row),
-	write('Row to write to: '), write(Row), nl,
-	writeElementAtIndex(Row, ColNumber, NewRow),
-	write('[DEBUG] New row: '), write(NewRow), nl.
+% Converts single array to 3 arrays.
+getRows(Cells, Row1, Row2, Row3):-
+	write('[DEBUG] Get rows...'), nl,
+	take(Cells, 3, Row1, NewList1),
+	take(NewList1, 3, Row2, NewList2),
+	take(NewList2, 3, Row3, _).
+
+getCol(Cells, ColIndexStart, Col):-
+	ColIndexStart2 is ColIndexStart + 3,
+	ColIndexStart3 is ColIndexStart + 6,
+
+	nth0(ColIndexStart, Cells, Cell1),
+	nth0(ColIndexStart2, Cells, Cell2),
+	nth0(ColIndexStart3, Cells, Cell3),
+	Col = [Cell1, Cell2, Cell3].
+
+getCols(Cells, Col1, Col2, Col3):-
+	write('[DEBUG] Get cols...'), nl,
+	getCol(Cells, 0, Col1),
+	writeln(Col1),
+
+	getCol(Cells, 1, Col2),
+	writeln(Col2),
+
+	getCol(Cells, 2, Col3),
+	writeln(Col3).
+
+
+
+
+% Helper function. Take first 'N' elements from a list, and return it as 'L1', and return the list without the first 'N' elements as 'Res'.
+take(L, N, L1, Res):- 
+	length(L1, N), append(L1, Res, L).
+
+
 
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Board read and writes - End @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -88,7 +133,7 @@ writeCell(Player, RowNumber, ColNumber):-
 
 
 
-/* User Input - Start */
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ User Input - Start @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 inputSelectCell(Row, Col):-
 	writeln('Row number(1-3): '),
 	read(Row),
@@ -101,17 +146,18 @@ inputSelectCell(Row, Col):-
 	) ; 
 	nl, writeln('Please enter valid numbers!'),
 	inputSelectCell(Row, Col).
-/* User Input - End */
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ User Input - End @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 
 
 
 
 
-/* Print Board - Start */
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Print Board - Start @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 printBoard():-
-	%writeln('Printing board...'),
-	retract(board(Row1, Row2, Row3)),
+	writeln('[DEBUG] Printing board...'),
+	retract(board(Cells)),
+	getRows(Cells, Row1, Row2, Row3),
 	nl, nl,
 	printRow(Row1),
 	writeln('|---|---|---|'),
@@ -119,11 +165,11 @@ printBoard():-
 	writeln('|---|---|---|'),
 	printRow(Row3),
 	nl, nl,
-	assert(board(Row1, Row2, Row3)).
+	assert(board(Cells)).
 printRow([Head|Tail]):-
 	write('|'),
 	((Head == 0,write('   ')) ; (Head == 1,write(' X ')) ; (Head == 2,write(' O '))),
 	printRow(Tail).
 printRow([]):-
 	writeln('|').
-/* Print Board - End */
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Print Board - End @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
