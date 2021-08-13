@@ -1,5 +1,5 @@
 % To run:
-% [main], retractall(board(_, _, _)), begin().
+% consult("main.pl"), retractall(board(_,_,_)), begin().
 
 
 /*
@@ -14,10 +14,31 @@ O Player: 2
 */
 
 begin():-
+	nl,nl,
 	writeln('Welcome to TicTacToe! Made by Shlomi Domnenko!'),
-	assert(board([0,0,0], [0,2,0], [0,1,0])),
-	printBoard().
+	writeln('Starting player is X, second player is O'),
+	nl,
+	assert(board([0,0,0], [0,0,0], [0,0,0])),
+	printBoard(),
+	writeln('Please select your cell'),
+	inputSelectCell(Row, Col).
 
+
+/* User Input - Start */
+inputSelectCell(Row, Col):-
+	writeln('Row number(1-3): '),
+	read(Row),
+	writeln('Column number(1-3): '),
+	read(Col),
+	(
+	integer(Row), integer(Col),
+	Row > 0, Row < 4,
+	Col > 0, Col < 4,
+	writeln('Success!')
+	) ; 
+	nl, writeln('Please enter valid numbers!'),
+	inputSelectCell(Row, Col).
+/* User Input - End */
 
 printBoard():-
 	retract(board(Row1, Row2, Row3)),
