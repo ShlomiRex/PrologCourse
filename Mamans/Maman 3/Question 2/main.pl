@@ -26,9 +26,13 @@ begin():-
 begin(Player):-
 	playerTurn(Player),
 	writeln('Player turn end'),
-	not(checkWinner(Player)),
-	nl, writeln('[DEBUG] Not winner.'),
-	(Player == 1, begin(2)) ; (begin(1)).
+	(
+		not(checkWinner(Player)), 
+		writeln('[DEBUG] Not winner.'),
+		((Player == 1, begin(2)) ; begin(1)
+	) ;
+	(printBoard(), nl, nl, write('We have a winner!!!'), nl, nl)).
+
 
 % Player makes a move on the board.
 playerTurn(Player):-
@@ -37,7 +41,6 @@ playerTurn(Player):-
 	writeln('Please select your cell'),
 	inputSelectCell(Row, Col),
 	playerMove(Player, Row, Col).
-
 	
 
 
