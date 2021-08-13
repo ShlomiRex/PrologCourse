@@ -28,7 +28,7 @@ begin(Player):-
 	writeln('Player turn end'),
 	(
 		not(checkWinner(Player)), 
-		writeln('[DEBUG] Not winner.'),
+		%writeln('[DEBUG] Not winner.'),
 		((Player == 1, begin(2)) ; begin(1)
 	) ;
 	(printBoard(), nl, nl, write('We have a winner!!!'), nl, nl)).
@@ -47,7 +47,7 @@ playerTurn(Player):-
 
 
 checkWinner(Player):-
-	write('[DEBUG] Checking if winner...'), nl,
+	%write('[DEBUG] Checking if winner...'), nl,
 
 	retract(board(Cells)), % Look at memory
 	assert(board(Cells)), % Don't update it, only read
