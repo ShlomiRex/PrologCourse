@@ -72,11 +72,11 @@ is_zigzag_yored(nil).
 % ?- T = t(t(nil, 1, nil), 2, t(nil, 3, nil)), is_zigzag_ole(T). % true
 % ?- T = t(t(nil, 1, nil), 2, t(nil, 3, nil)), is_zigzag_yored(T). % false
 
-% Basic tree, 3 levels, like in the question
+% Basic tree, 3 levels, like in the question (root of 10)
 % ?- T2 = t(t(nil, 15, nil),10,t(t(nil, 6, nil), 8, nil)), is_zigzag_ole(T2). % false
 % ?- T2 = t(t(nil, 15, nil),10,t(t(nil, 6, nil), 8, nil)), is_zigzag_yored(T2). % true
 
-% The question's tree
+% The question's tree (root of 20)
 % ?- T1 = t(t(t(nil, 15, nil),10,t(t(nil,6,nil),8,nil)),20,t(nil,30,t(nil, 25, nil))), is_zigzag_ole(T1). % true
 % ?- T1 = t(t(t(nil, 15, nil),10,t(t(nil,6,nil),8,nil)),20,t(nil,30,t(nil, 25, nil))), is_zigzag_yored(T1). % false
 
